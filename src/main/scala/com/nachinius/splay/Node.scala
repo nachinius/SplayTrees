@@ -4,9 +4,14 @@ import scala.annotation.tailrec
 
 class Node[K,V](var key: K, var elem: V, var left: Option[Node[K,V]] = None, var right: Option[Node[K,V]] = None, var parent: Option[Node[K,V]] = None)(implicit ordered: K => Ordered[K]) extends Traversable[Node[K,V]] {
   selfNode =>
-  override def toString() = s"k=$key"
+  override def toString() = s"Node [$key, $elem]"
 
-
+  /**
+    * InOrder implementation, since in splay trees, it returns the elements
+    * sorted by key
+    * @param f
+    * @tparam U
+    */
   def foreach[U](f: Node[K,V] => U): Unit = {
     left.foreach(n => n.foreach(f))
     f(selfNode)
@@ -124,4 +129,18 @@ class Node[K,V](var key: K, var elem: V, var left: Option[Node[K,V]] = None, var
       }
     }
   }
+
+  @tailrec
+  final def leftist: Node[K,V] =
+    left match {
+      case None => selfNode
+      case Some(n) => n.leftist
+    }
+
+  @tailrec
+  final def rightist: Node[K,V] =
+    right match {
+      case None => selfNode
+      case Some(n) => n.rightist
+    }
 }

@@ -6,14 +6,13 @@ import scala.collection.mutable
 
 /**
   * A mutable Splay Tree implementation of keys K that supports satellite data of type V.
+  *
   *   A splay tree is a BST that has
   *   for certain operations
   *   - the working-set property
   *   - the dynamic-finger property
   *   - conjectured to be dynamically optimal
   *   - conjectured to have unified property
-  *
-  *
   *
   * @param ordering implicit ordering for K
   * @tparam K key
@@ -24,8 +23,7 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
   type SelfType = Splay[K,V]
   type NodeType = Node[K,V]
 
-  var root: Option[NodeType] = None
-
+  private var root: Option[NodeType] = None
 
   override def foreach[U](f: ((K, V)) => U): Unit = {
     root.foreach(
@@ -52,8 +50,36 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
     * @return
     */
   def add(k: K, v: V): Option[Node[K, V]] = {
-    if(root.isEmpty) { root = (new Node(k,v)).asOption; root}
+    if(root.isEmpty) { root = new Node(k, v).asOption; root}
     else root.flatMap(_.add(k,v))
+  }
+
+  /**
+    * Add to the tree the element k,v and splays it.
+    *
+    * @param k
+    * @param v
+    * @return added Node
+    */
+  def insert(k: K, v: V): Option[Node[K,V]] = {
+    if(root.isEmpty) { root = new Node(k, v).asOption; root}
+    else {
+      root.flatMap(_.add(k,v)).map(splay)
+    }
+  }
+
+  def minimum: Option[Node[K,V]] = root.map(_.leftist)
+  def maximum: Option[Node[K,V]] = root.map(_.rightist)
+
+  @throws[NoSuchElementException]
+  override def min[B >: (K, V)](implicit cmp: Ordering[B]): (K, V) = {
+    val node = root.get.leftist
+    (node.key, node.elem)
+  }
+  @throws[NoSuchElementException]
+  override def max[B >: (K, V)](implicit cmp: Ordering[B]): (K, V) = {
+    val node = root.get.rightist
+    (node.key, node.elem)
   }
 
   def isRoot(n: NodeType): Boolean = root.contains(n)
@@ -87,21 +113,27 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
 
   /**
     * Cut one of the branches from this splay tree.
-    * @param t Left|Right
+    * @param direction Left|Right
     * @return cutted branch as a new splay tree object.
     */
-  def cut(t: RightOrLeft): SelfType = {
+  def cut(direction: RightOrLeft): SelfType = {
     val cutted = new Splay[K,V]
-    cutted.root = root.flatMap(_.cut(t))
+    cutted.root = root.flatMap(_.cut(direction))
     cutted
   }
 
-  def setRoot(n: Option[Node[K,V]]): Unit = {
+  def split(n: NodeType): SelfType = {
+    splay(n)
+    cut(Right)
+  }
+
+
+  private[splay] def setRoot(n: Option[Node[K,V]]): Unit = {
     root = n
     n.foreach(_.setParent(None))
   }
 
-  def handleGrandParent(x: Node[K, V], p: Node[K, V]): Unit = {
+  private [splay] def handleGrandParent(x: Node[K, V], p: Node[K, V]): Unit = {
     p.childOf match {
       case (Root, _) =>
         setRoot(x.asOption)
@@ -112,7 +144,7 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
     }
   }
 
-  def rotate(n: Node[K,V]): Unit = {
+  private [splay] def rotate(n: Node[K,V]): Unit = {
     n.childOf match {
       case (Root,_) => ()
       case (Left,p) =>

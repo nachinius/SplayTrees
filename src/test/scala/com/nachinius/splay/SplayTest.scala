@@ -113,11 +113,6 @@ class SplayTest extends FreeSpec with Matchers with OptionValues {
         val nmbrs = (1 to 10 by 3).toList
         val nodeAdded: List[Node[Int, String]] = rnd.shuffle(nmbrs).flatMap(i => splay.add(i, i.toString))
 
-        // shuffle a little bit the tree
-//        val searchFor = rnd.shuffle(nodeAdded ++ nodeAdded ++ nodeAdded ++ nodeAdded ++ nodeAdded ++ nodeAdded ++ nodeAdded).take(10).foreach {
-//          i: Node[Int, String] => splay.search(i.key)
-//        }
-
         rnd.shuffle(nodeAdded).forall({
           n =>
             splay.splay(n)

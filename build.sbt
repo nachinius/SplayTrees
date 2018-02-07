@@ -1,4 +1,4 @@
-name := "51-link-cut-tress"
+name := "splay-trees"
 
 version := "0.1"
 
