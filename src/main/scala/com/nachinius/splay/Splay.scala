@@ -14,6 +14,9 @@ import scala.collection.mutable
   *   - conjectured to be dynamically optimal
   *   - conjectured to have unified property
   *
+  * Usage: see SplayTest
+  *
+  *
   * @param ordering implicit ordering for K
   * @tparam K key
   * @tparam V satellite data
@@ -23,7 +26,7 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
   type SelfType = Splay[K,V]
   type NodeType = Node[K,V]
 
-  private var root: Option[NodeType] = None
+  private[splay] var root: Option[NodeType] = None
 
   override def foreach[U](f: ((K, V)) => U): Unit = {
     root.foreach(
@@ -49,7 +52,7 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
     * @param v
     * @return
     */
-  def add(k: K, v: V): Option[Node[K, V]] = {
+  private[splay] def add(k: K, v: V): Option[Node[K, V]] = {
     if(root.isEmpty) { root = new Node(k, v).asOption; root}
     else root.flatMap(_.add(k,v))
   }
@@ -162,22 +165,23 @@ class Splay[K, V]()(implicit ordering: Ordering[K]) extends mutable.Traversable[
 object Splay {
   def apply[K, V](k: K, v: V)(implicit ordering: Ordering[K]): Splay[K, V] = {
     val res = new Splay[K, V]
-    res.add(k, v)
+    res.insert(k, v)
     res
   }
 
   def apply[K, V](m: Map[K, V])(implicit ordering: Ordering[K]): Splay[K, V] = {
     val res = new Splay[K, V]
-    m.foreach { case (k, v) => res.add(k, v) }
+    m.foreach { case (k, v) => res.insert(k, v) }
     res
   }
 
   def apply[K](ks: Seq[K])(implicit ordering: Ordering[K]): Splay[K, Any] = {
     case object Ignored
     val res = new Splay[K, Any]()
-    ks.foreach(x => res.add(x, Ignored))
+    ks.foreach(x => res.insert(x, Ignored))
     res
   }
+  def apply[K,V]()(implicit ordering: Ordering[K]): Splay[K,V] = new Splay[K,V]
 }
 
 
