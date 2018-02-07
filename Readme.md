@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/nachinius/SplayTrees.svg?branch=master)](https://travis-ci.org/nachinius/SplayTrees)
+[![Join the chat at https://gitter.im/SplayTrees/Lobby](https://badges.gitter.im/SplayTrees/Lobby.svg)](https://gitter.im/SplayTrees/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 # Splay Tree
 
-[![Join the chat at https://gitter.im/SplayTrees/Lobby](https://badges.gitter.im/SplayTrees/Lobby.svg)](https://gitter.im/SplayTrees/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ### what is a Splay Tree
 from https://en.wikipedia.org/wiki/Splay_tree (retrieved 2018-february-05)
