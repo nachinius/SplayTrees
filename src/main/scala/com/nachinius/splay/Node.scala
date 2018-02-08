@@ -18,8 +18,16 @@ import scala.annotation.tailrec
   * @tparam K types of K
   * @tparam V types of value associated with this node. It's not relevant for any internal algorithm.
   */
-class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var right: Option[Node[K,V]] = None, var parent: Option[Node[K,V]] = None, var externalParent: Option[Node[K,V]] = None)(implicit ordered: K => Ordered[K]) extends Traversable[Node[K,V]] {
-  selfNode =>
+class Node[K,V](
+                 val key: K,
+                 val elem: V,
+                 var left: Option[Node[K,V]] = None,
+                 var right: Option[Node[K,V]] = None,
+                 var parent: Option[Node[K,V]] = None,
+                 var externalParent: Option[Node[K,V]] = None)
+               (implicit ordered: K => Ordered[K])
+  extends Traversable[Node[K,V]] {
+  self =>
   override def toString() = s"Node [$key, $elem]"
 
   /**
@@ -30,13 +38,13 @@ class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var
     */
   def foreach[U](f: Node[K,V] => U): Unit = {
     left.foreach(n => n.foreach(f))
-    f(selfNode)
+    f(self)
     right.foreach(n => n.foreach(f))
   }
 
   def depthFirst[U](f: Node[K,V] => U): Unit = {
     println("===new node")
-    f(selfNode)
+    f(self)
     left.foreach(n => {
       println("+++lll")
       n.depthFirst(f)
@@ -50,27 +58,27 @@ class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var
     println("====end node")
   }
 
-  def isALeftChild: Boolean = parent.fold(false)(_.left.contains(selfNode))
-  def isARightChild: Boolean = parent.fold(false)(_.right.contains(selfNode))
+  def isALeftChild: Boolean = parent.fold(false)(_.left.contains(self))
+  def isARightChild: Boolean = parent.fold(false)(_.right.contains(self))
   def isALeftLeftGrandChild: Boolean = {
-    parent.exists(p => p.isALeftChild && p.left.contains(selfNode))
+    parent.exists(p => p.isALeftChild && p.left.contains(self))
   }
   def isARightRightGrandChild: Boolean = {
-    parent.exists(p => p.isARightChild && p.right.contains(selfNode))
+    parent.exists(p => p.isARightChild && p.right.contains(self))
   }
   def setLeft(n: Option[Node[K,V]]): Unit = {
     left = n
-    left.foreach(_.parent = selfNode.asOption)
+    left.foreach(_.parent = self.asOption)
   }
   def setRight(n: Option[Node[K,V]]): Unit = {
     right = n
-    right.foreach(_.parent = selfNode.asOption)
+    right.foreach(_.parent = self.asOption)
 
   }
   def setParent(n: Option[Node[K,V]]): Unit = {
     parent = n
   }
-  def asOption: Option[Node[K,V]] = Some(selfNode)
+  def asOption: Option[Node[K,V]] = Some(self)
 
 
   /**
@@ -79,12 +87,12 @@ class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var
     */
   def childOf: (ChildKind, Node[K,V]) = {
     parent.map {
-      p => if(p.left.contains(selfNode)) {
+      p => if(p.left.contains(self)) {
         (Left,p)
       } else {
         (Right,p)
       }
-    } getOrElse (Root,selfNode)
+    } getOrElse (Root,self)
   }
 
   def search(k: K): Option[Node[K,V]] = {
@@ -149,14 +157,14 @@ class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var
   @tailrec
   final def leftist: Node[K,V] =
     left match {
-      case None => selfNode
+      case None => self
       case Some(n) => n.leftist
     }
 
   @tailrec
   final def rightist: Node[K,V] =
     right match {
-      case None => selfNode
+      case None => self
       case Some(n) => n.rightist
     }
 }
