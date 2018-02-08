@@ -2,7 +2,23 @@ package com.nachinius.splay
 
 import scala.annotation.tailrec
 
-class Node[K,V](var key: K, var elem: V, var left: Option[Node[K,V]] = None, var right: Option[Node[K,V]] = None, var parent: Option[Node[K,V]] = None)(implicit ordered: K => Ordered[K]) extends Traversable[Node[K,V]] {
+/**
+  * A `Node` represents an element of tree. A `Node` without field `parent` represents a root.
+  *
+  * Each node may have childs. The childs are left or right.
+  * The BST property is maintained by the Ordering of K.
+  *
+  * @param key
+  * @param elem
+  * @param left
+  * @param right
+  * @param parent
+  * @param externalParent In some application of SplayTrees (like Link-cut trees), a parent pointer to an extra similar structure is needed it.
+  * @param ordered
+  * @tparam K types of K
+  * @tparam V types of value associated with this node. It's not relevant for any internal algorithm.
+  */
+class Node[K,V](val key: K, val elem: V, var left: Option[Node[K,V]] = None, var right: Option[Node[K,V]] = None, var parent: Option[Node[K,V]] = None, var externalParent: Option[Node[K,V]] = None)(implicit ordered: K => Ordered[K]) extends Traversable[Node[K,V]] {
   selfNode =>
   override def toString() = s"Node [$key, $elem]"
 
