@@ -115,6 +115,18 @@ class Node[K, V](
       case Some(n) => n.rightist
     }
 
+  def min: K = leftist.key
+  def max: K = rightist.key
+
+  @tailrec
+  final def findRoot: Node[K,V] = parent match {
+    case None => self
+    case Some(p) => p.findRoot
+  }
+  def isConnected(that: Node[K,V]): Boolean = {
+    self.splay
+    that.findRoot == self
+  }
   /**
     * Brings the node up, until it becomes root.
     *

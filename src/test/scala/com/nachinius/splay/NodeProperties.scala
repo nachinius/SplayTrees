@@ -1,7 +1,8 @@
 package com.nachinius.splay
 
 
-import org.scalacheck.Prop.forAll
+import org.scalacheck.Prop
+import org.scalacheck.Prop.{forAll, BooleanOperators}
 import org.scalacheck.{Arbitrary, Gen, Properties}
 import org.scalacheck.Arbitrary.arbitrary
 
@@ -9,6 +10,7 @@ import scala.util.Random
 
 
 object NodeProperties extends Properties("SplayNode") {
+  import Prop.BooleanOperators
   type NodeType = Node[Int,NotUsed]
 
   case class KeyAndTree(lst: List[Int], node: NodeType)
@@ -76,6 +78,29 @@ object NodeProperties extends Properties("SplayNode") {
   property("rightist get the max of all keys") = forAll {
     kt: KeyAndTree =>
       kt.node.map(_.key).max == kt.node.rightist.key
+  }
+
+  property("two element inserted into the same tree are connected") = forAll {
+    n: NodeType => {
+      (n.size > 1) ==> {
+        val lst = n.toList
+
+        def check(head: NodeType, rest: Seq[NodeType]): Boolean =
+          rest.forall(r => head.isConnected(r))
+
+        val tuplesOfChecks = lst.tail.scanLeft((lst.head, lst.tail))({
+          case (acc: (Node[Int, NotUsed], List[Node[Int, NotUsed]]), n: Node[Int, NotUsed]) => (n, acc._2.tail)
+        })
+        tuplesOfChecks.forall((check _).tupled)
+      }
+    }
+  }
+
+  property("elements of different trees aren't connect") = forAll {
+    (n: NodeType, n2: NodeType) =>
+      n2.forall(
+        n2node => !n.isConnected(n2node)
+      )
   }
 
 }
