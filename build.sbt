@@ -17,6 +17,7 @@ libraryDependencies += "org.scalacheck" %% "scalacheck" % scalaCheckVersion % "t
 
 coverageEnabled := true
 
+
 lazy val publishSettings = Seq(
   homepage := Some(url(s"https://github.com/$username/$repo")),
   licenses += "Apache License 2.0" -> url(s"https://github.com/$username/$repo/blob/master/LICENSE"),
