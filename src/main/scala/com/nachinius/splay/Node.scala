@@ -30,7 +30,7 @@ import scala.collection.mutable.ArrayBuffer
   * @tparam V types of value associated with this node. It's not relevant for any internal algorithm.
   */
 class Node[K, V](
-                  val key: K,
+                  var key: K,
                   var elem: V,
                   var left: Option[Node[K, V]] = None,
                   var right: Option[Node[K, V]] = None,
@@ -152,19 +152,23 @@ class Node[K, V](
     splay
     cut(Right)
   }
+  def splitLeft: Option[Node[K,V]] = {
+    splay
+    cut(Left)
+  }
 
-  private[splay] def setLeft(n: Option[Node[K, V]]): Unit = {
+  def setLeft(n: Option[Node[K, V]]): Unit = {
     left = n
     left.foreach(_.parent = self.asOption)
   }
 
-  private[splay] def setRight(n: Option[Node[K, V]]): Unit = {
+  def setRight(n: Option[Node[K, V]]): Unit = {
     right = n
     right.foreach(_.parent = self.asOption)
 
   }
 
-  private[splay] def asOption: Option[Node[K, V]] = Some(self)
+  def asOption: Option[Node[K, V]] = Some(self)
 
   /**
     * Obtain parent and in which branch this node is
@@ -285,6 +289,11 @@ class Node[K, V](
     if (comparison > 0) left.flatMap(_.searchDown(k))
     else if (comparison < 0) right.flatMap(_.searchDown(k))
     else asOption
+  }
+
+  def globalUpdateKey(f: K => K) = {
+    splay
+    foreach( n => n.key = f(n.key))
   }
 
 }
