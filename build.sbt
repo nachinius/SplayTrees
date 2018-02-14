@@ -4,7 +4,6 @@ val username = "nachinius"
 name := "SplayTrees"
 organization := "com.nachinius"
 description := "A SplayTree implementation"
-version := "0.1"
 val repo = "SplayTrees"
 
 scalaVersion := "2.12.4"
