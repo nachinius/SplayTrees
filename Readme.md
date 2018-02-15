@@ -2,6 +2,8 @@
 [![codecov](https://codecov.io/gh/nachinius/SplayTrees/branch/master/graph/badge.svg)](https://codecov.io/gh/nachinius/SplayTrees)
 [![Coverage Status](https://coveralls.io/repos/github/nachinius/SplayTrees/badge.svg?branch=master)](https://coveralls.io/github/nachinius/SplayTrees?branch=master)
 [![Join the chat at https://gitter.im/SplayTrees/Lobby](https://badges.gitter.im/SplayTrees/Lobby.svg)](https://gitter.im/SplayTrees/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Latest version](https://index.scala-lang.org/nachinius/splaytrees/splaytrees/latest.svg)](https://index.scala-lang.org/nachinius/splaytrees/splaytrees)
+
 
 # Splay Tree
 A `splay-tree` is a BST, self adjusting, that has
@@ -10,6 +12,12 @@ A `splay-tree` is a BST, self adjusting, that has
 - the dynamic-finger property
 - conjectured to be dynamically optimal
 - conjectured to have unified property
+
+## install with sbt
+```sbt
+    val splayTreesVersion = "0.1.1"
+    libraryDependencies += "com.nachinius" %% "splaytrees" % splayTreesVersion
+```
 
 ## usage
 

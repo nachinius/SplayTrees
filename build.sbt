@@ -25,7 +25,7 @@ developers := List(
 )
 
 publishMavenStyle := true
-publishArtifact in Test := false
+publishArtifact in Test := true
 
 
 publishTo := Some(if (isSnapshot.value) Opts.resolver.sonatypeSnapshots else Opts.resolver.sonatypeStaging)
